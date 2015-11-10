@@ -9,26 +9,31 @@
     * Issueの作成と、commit、push
     * Pull Requestからの、コードレビュー、merge
     * コンフリクトの解消
-1. 基本的なGitコマンド操作の学習④
-    * 様々なmerge(fast-forward, non-fast-forward, rebase)
+
+**補足資料**
+
+* [様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)
+    * fast-forward と non-fast-forward
+    * merge と rebase
+    * rebaseを安心して使えるケース
 
 ## 前回のおさらい
 
 ```bash
 # リポジトリのclone
-$ git clone <リモートリポジトリのURL>
+git clone <リモートリポジトリのURL>
 # ブランチの作成
-$ git checkout -b <ブランチ名>
+git checkout -b <ブランチ名>
 # ブランチの切り替え
-$ git checkout <ブランチ>
+git checkout <ブランチ>
 # ブランチの一覧
-$ git branch
+git branch
 # 変更したファイルのステージング（コミット対象化)
-$ git add <ファイル or ディレクトリのpath>
+git add <ファイル or ディレクトリのpath>
 # コミット
-$ git commit -m "<コミットメッセージ>"
+git commit -m "<コミットメッセージ>"
 # リモートリポジトリへの反映
-$ git push <リポジトリ名> <ブランチ名>
+git push <リポジトリ名> <ブランチ名>
 ```
 
 ## はじめに
@@ -44,43 +49,51 @@ Githunのダッシュボードを個人用からOrganization用に切り替え�
 
 ### 事前準備
 * 以下のリポジトリをローカルにcloneする
-`https://github.com/RksOsakaGitHandsOn/2ndclass_step1.git`
+
+    https://github.com/RksOsakaGitHandsOn/2ndclass_step1.git
 
 #### 1. リモートリポジトリに変更を加える
 
 *この作業は講師が行います*
 
 ```bash
-$ echo "Hello Git." >> README.md
-$ git add README.md
-$ git commit -m "READMEを修正しました"
-$ git push origin master
+echo "Hello Git." >> README.md
+git add README.md
+git commit -m "READMEを修正しました"
+git push origin master
 ```
 
 #### 2. リモートリポジトリの変更をローカルリポジトリに反映する
 
 Gitでリモートリポジトリの変更をローカルに反映するには、おおまかに以下のステップを踏みます。
-（詳しく知りたい方向けに後述します）
 
 1. ローカルにリモートの変更履歴だけを取り込む (`fetch`)
 1. 変更履歴に基づく差分を、ローカルブランチに反映する (`merge`)
 
 ```bash
 # リモートリポジトリ上での変更を取得する
-$ git fetch
+git fetch
 # ローカルのブランチにマージする
-$ git merge <マージ元ブランチ名> [マージ先ブランチ名]
+git merge <src branch> [<dist branch>]
 ```
-
-* [マージ先ブランチ名]を省略した場合、カレントブランチにマージします
+* `src branch`を`dist branch`にマージします
+* `dist branch`を省略した場合、カレントブランチにマージします
 
 *実行例*
 
 ```bash
-$ gti checkout master
-$ git fetch
-$ git merge origin/master
+gti checkout master
+git fetch
+# リモートのmasterブランチの変更を、ローカルのmasterブランチ(カレントブランチ)にマージ
+git merge origin/master
 ```
+
+`~/.gitconfig`の`megre.ff`を`false`に設定している場合、`git log`を実行するとマージのコミットログが増えていることが確認できます。
+
+**(補足) マージコミット**
+
+topicブランチからmaster等の **統合ブランチへのmerge** を行う場合、「マージした」という履歴を残すため、マージコミットを残す事が一般的です。
+しかし、今回のようにリモートの変更をローカルに反映するmergeではマージコミットを残したくありません。その場合、`git merge`の代わりに`git rebase`を行います。詳細は、[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)を参照してください。
 
 **(補足) git pull**
 
@@ -88,14 +101,10 @@ fetchとmergeを同時に行ってくれる、`pull`という方法もありま�
 
 ```bash
 # 以下のコマンドで fetch + merge と同じ結果が得られる
-$ git pull origin
+git pull origin
 ```
 
 ただし、`git pull`はmergeまで一気に実行するため、意図せずリモートの変更をローカルに反映してしまう場合があります。慣れないうちは `git fetch` + `git merge` を使うほうが良いでしょう。
-
-> 前回の勉強会で.gitconfigのmegre.ffをfalseに設定している方は、git logを実行するとマージのコミットログが増えていることが確認できるはずです。
-> 別のブランチからmaster等の統合ブランチにmergeを行う場合、マージした履歴を残すため、マージコミットを残す事が一般的です。しかし、今回のようにリモートの変更をローカルに反映するmergeにまでマージコミットを残したくありません。
-> これを解消する便利な方法があるのですが、これについては、後ほど説明します。
 
 ## Gitホスティングサービスを使った複数人によるバージョン管理
 
@@ -103,7 +112,7 @@ $ git pull origin
 
 * 以降の作業は２人一組でそれぞれ **管理者** と **作業者** に役割を決めてお互いの画面を見ながら進めます。
 * Github上に、ペア毎にリポジトリを１つ作成してください。
-* 各自、作成したリポジトリをローカル上にcloneしてください。
+* 各自、作成したリポジトリをローカル上にcloneしてください。(ホームディレクトリに移動して実行してください)
 
 ### 1. Issueの作成と、commit、push
 
@@ -119,26 +128,30 @@ Issue駆動で作業の発生からソースを変更してpushをする流れ�
 ```
 
 * Issueページへのリンク
-![Issueページへのリンク](../asset/img/2_where_is_issue.png)
+
+    ![Issueページへのリンク](../asset/img/2_where_is_issue.png)
 
 * New issueボタン
-![New issueボタン](../asset/img/3_new_issue_button.png)
+
+    ![New issueボタン](../asset/img/3_new_issue_button.png)
 
 * Issueの作成と担当者の設定
-![Issueの作成と担当者の設定](../asset/img/4_create_issue.png)
+
+    ![Issueの作成と担当者の設定](../asset/img/4_create_issue.png)
 
 #### 1-2. (作業者) Issueを確認し、Issue対応用のブランチを作成する
 
 以下のページから、自分にIssueが割り当てられていることを確認します。
 
 * Issueリストの表示
-![Issueリストの表示](../asset/img/5_assigned_issue.png)
+
+    ![Issueリストの表示](../asset/img/5_assigned_issue.png)
 
 
 ```bash
-$ cd <cloneした作業ディレクトリ>
+cd <cloneした作業ディレクトリ>
 # Issue対応用のブランチを作成する
-$ git checkout -b issue/#1
+git checkout -b issue/#1
 ```
 
 #### 1-3. (作業者) ファイルに変更を加え、commitする
@@ -147,23 +160,26 @@ $ git checkout -b issue/#1
 
 ```bash
 # ファイルの編集
-$ vi README.md
-$ git commit -m "変更しました #1"
+vi README.md
+git add .
+git commit -m "変更しました #1"
 ```
 
 #### 1-4. (作業者) リモートリポジトリにpushする
 
 ```bash
-$ git push origin issue/#1
+git push origin issue/#1
 ```
 
 Github上でコミットログが追加され、コミットとIssueがリンクしていることを確認してください。
 
 * コミットログ
-![コミットログ](../asset/img/5_commit_log.png)
+
+    ![コミットログ](../asset/img/5_commit_log.png)
 
 * Issueにも反映
-![Issueにも反映](../asset/img/6_issue_reflect_commit.png)
+
+    ![Issueにも反映](../asset/img/6_issue_reflect_commit.png)
 
 
 ### 2. Pull Requestからの、コードレビュー、merge
@@ -183,10 +199,12 @@ Pull Requestを元に、Github上でコードレビューを行い、ソース�
 ```
 
 * Pull Requestの発行ボタン
-![PRの発行ボタン](../asset/img/7_create_pr.png)
+
+    ![PRの発行ボタン](../asset/img/7_create_pr.png)
 
 * Pull Requestの作成
-![PRの作成](../asset/img/8_create_pr2.png)
+
+    ![PRの作成](../asset/img/8_create_pr2.png)
 
 
 #### 2-2. (管理者) 変更点をレビューし、レビューコメントを残す
@@ -199,16 +217,20 @@ Pull Requestを元に、Github上でコードレビューを行い、ソース�
 ```
 
 * Pull Requestリストの表示
-![PRリストの表示](../asset/img/9_pr_list.png)
+
+    ![PRリストの表示](../asset/img/9_pr_list.png)
 
 * コードレビュー
-![コードレビュー](../asset/img/10_code_review.png)
+
+    ![コードレビュー](../asset/img/10_code_review.png)
 
 * レビューコメントの入力
-![レビューコメントの登録](../asset/img/11_pr_comment.png)
+
+    ![レビューコメントの登録](../asset/img/11_pr_comment.png)
 
 * 担当者の変更
-![担当者の変更](../asset/img/12_reviewed.png)
+
+    ![担当者の変更](../asset/img/12_reviewed.png)
 
 #### 2-3. (作業者) 再度ファイルを修正し、commit + push
 
@@ -218,9 +240,10 @@ Pull Requestを元に、Github上でコードレビューを行い、ソース�
 ```
 
 ```bash
-$ vi README.md
-$ git commit -m "指摘修正 #1"
-$ git push origin issue/#1
+vi README.md
+git add .
+git commit -m "指摘修正 #1"
+git push origin issue/#1
 ```
 
 #### 2-4. (作業者) 再レビュー依頼する
@@ -231,7 +254,8 @@ $ git push origin issue/#1
 ```
 
 * 再レビュー依頼コメント
-![再レビュー依頼コメント](../asset/img/13_fix_comment.png)
+
+    ![再レビュー依頼コメント](../asset/img/13_fix_comment.png)
 
 
 #### 2-4. (管理者) 再レビューし、mergeする
@@ -245,28 +269,39 @@ $ git push origin issue/#1
 ```
 
 * Merge pull requestボタン
-![Merge pull requestボタン](../asset/img/14_merge.png)
+
+    ![Merge pull requestボタン](../asset/img/14_merge.png)
 
 * マージ実行
-![マージ実行](../asset/img/15_confirm_merge.png)
+
+    ![マージ実行](../asset/img/15_confirm_merge.png)
 
 * ブランチ削除
-![ブランチ削除](../asset/img/16_delete_branch.png)
+
+    ![ブランチ削除](../asset/img/16_delete_branch.png)
+
+> 画面上の「Revert」や「Restore branch」を押下すると、マージの取り消しやブランチ削除の取り消しができます。
+> ※ 一度画面を移動すると実行できなくなります。
 
 #### 2-5. (管理者) (作業者) masterブランチを最新化して、変更がmasterブランチにmergeされていることを確認する
 
 ```bash
-$ git checkout master
-$ git fetch
-$ git rebase origin/master
+git checkout master
+git fetch
+git rebase origin/master
 ```
 
 `git log`や、ファイルの中身を確認し、Github上で受け入れたPull Requestの内容がmasterブランチに反映されていることを確認してください。
 
+```bash
+# ブランチツリーを確認し、マージが行われていることを確認する
+git log --graph --oneline
+```
+
 >ここで、ブランチの統合にmergeではなく、rebaseというコマンドを使用しています。
->冒頭でご説明した、リモートの変更を取り込む際にマージコミットを残さない方法がこちらです。
+>リモートの変更を取り込む際にマージコミットを残さない方法がこちらです。
 >rebaseも、mergeと同様にブランチの統合を行うコマンドですが、コミットを残さないという特徴があります。
->両者の使い分けはきちんとした根拠があるのですが、それについては「様々なブランチ統合」の節を参照してください。
+>両者の使い分けはきちんとした根拠があるのですが、それについては[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)を参照してください。
 
 ### 3. コンフリクトの解消
 
@@ -275,25 +310,25 @@ $ git rebase origin/master
 #### 3-1. (作業者) conflict実験用ブランチを作成し、pushする
 
 ```bash
-$ git checkout -b conflict_test
-$ echo "hogehoge" >> README.md
-$ echo "abcde" > alphabet.txt
-$ echo "12345" > number.txt
-$ git add .
-$ git commit -m "コンフリクトしませんように"
-$ git push origin conflict_test
+git checkout -b conflict_test
+echo "hogehoge" >> README.md
+echo "abcde" > alphabet.txt
+echo "12345" > number.txt
+git add .
+git commit -m "コンフリクトしませんように"
+git push origin conflict_test
 ```
 
 #### 3-2. (管理者) 意図的にコンフリクトを起こすため、masterブランチを変更し、pushする
 
 ```bash
-$ git checkout master
-$ echo "fugafuga" >> README.md
-$ echo "fghij" > alphabet.txt
-$ echo "67890" > number.txt
-$ git add .
-$ git commit -m "コンフリクトさせてやる"
-$ git push origin master
+git checkout master
+echo "fugafuga" >> README.md
+echo "fghij" > alphabet.txt
+echo "67890" > number.txt
+git add .
+git commit -m "コンフリクトさせてやる"
+git push origin master
 ```
 
 #### 3-3. (作業者) Pull Requestを作成する
@@ -309,10 +344,12 @@ $ git push origin master
 ※本来はこの時点でmasterブランチとコンフリクトが発生していることがわかるため、Pull Requestは作成せず、コンフリクトの解消を図ります。
 
 * コンフリクト警告
-![コンフリクト警告](../asset/img/17_conflict_alert.png)
+
+    ![コンフリクト警告](../asset/img/17_conflict_alert.png)
 
 * マージできない
-![マージできない](../asset/img/18_cant_merge.png)
+
+    ![マージできない](../asset/img/18_cant_merge.png)
 
 #### 3-4. (管理者) Pull Requestを確認する
 
@@ -328,9 +365,9 @@ $ git push origin master
 masterブランチの最新の更新を取得します。
 
 ```bash
-$ git checkout master
-$ git fetch
-$ git rebase origin/master
+git checkout master
+git fetch
+git rebase origin/master
 ```
 
 masterのマージを試みると、コンフリクトが発生します。
@@ -372,15 +409,15 @@ Unmerged paths:
 
 ```bash
 # マージ元ブランチの変更を採用
-$ git checkout --theirs alphabet.txt
+git checkout --theirs alphabet.txt
 # マージ先ブランチの変更を採用
-$ git checkout --ours number.txt
+git checkout --ours number.txt
 # 手動で編集し、マージ
-$ vi README.md
+vi README.md
 # git addすることでマージ済扱いとなる
-$ git add .
-$ git commit -m "コンフリクト解消"
-$ git push origin conflict_test
+git add .
+git commit -m "コンフリクト解消"
+git push origin conflict_test
 ```
 
 > ちなみに、マージ作業でわけがわからなくなったら`git checkout --merge [ファイル名]`または`git checkout --merge .`でmergeコマンド実行直後の状態まで戻る事ができます。
@@ -395,209 +432,65 @@ $ git push origin conflict_test
 4. [Delete branch]を押下
 ```
 
-## 基本的なGitコマンド操作の学習④
+## 勉強会中、アンケートでの質問と回答
 
-### 様々なブランチ統合 (fast-forward, non-fast-forward, rebase)
+* **Q.** `git merge`を実行するとエディター(vim)が立ち上がった
+    * **A.** `~/.gitconfig`で`merge.ff`を`false`に設定している場合、マージコミットが実行されます。この際、コミットメッセージを編集するために、エディターが起動します。
+必要に応じて内容を編集し、保存終了してください。
 
-#### fast-forward と non-fast-forward
-Gitのmergeには、fast-forward(早送り)、non-fast-forwardというオプションがあります。両者の違いは、「マージをした」という操作に対してコミットログを残すか、残さないか、というものです。
+* **Q.** コミットメッセージにIssue番号入れ忘れてしまいました。
+    * **A.** pushする前であれば、`git commit --amend`を実行することで、直前のコミットのやり直しを行うことができます。
+commitを取り消す方法については、後述の補足をご覧ください。
 
-|モード|コマンド|マージコミットのログ|
-|:-----------|:------------|:-----------|
-| fast-forward | git merge --ff | 残さない |
-| non-fast-forward | git merge --no-ff | 残す |
+* **Q.** ブランチ名に含まれる「#1」の文字列はどういう意味ですか？
+    * **A.** ブランチ名に含まれる「#1」はGitおよびGithub上で特別な意味を持ちません。
+ブランチを管理する上でissue番号等を含める方が判りやすいので、このような命名にする場合があります。
 
-`~/.gitconfig`で下記の設定を行っていると、オプションを指定しない場合、常に`--no-ff`でマージを行うようになります。
+* **Q.** ブランチをマージする前に動作確認（受け入れテスト）をするにはどうするのが良いでしょうか？
+    * **A.** Pull Requestの対象になっているブランチに切り替えて動作確認し、コードレビューと動作確認が完了後、mergeを実行すれば良いでしょう。
 
-```bash
-[merge]
-    ff = false
-```
+* **Q.** 私のチームでは、オフショア先でコードレビューをした後、日本側でもコードレビューを行っています。この場合、Pull Requestはどう扱えば良いでしょうか。
+    * **A.** Pull Requestそのものを複数人のレビュアーで回覧する、あるいは開発フローに応じてブランチを段階的に分けるなど、チームに即した運用を策定することになります。
+今回紹介したGithubの運用やPull Requestの流れ、そしてGit FlowやGithub Flowなどで定義される開発フローは、 **あくまでモデルケースであり、強制されるものではありません。** 実際の運用では、 **開発チーム毎に適した形にアレンジしていく** のが良いでしょう。
 
-それでは、実際に２つのオプションをそれぞれ使用して、コミットログの差異を確認しましょう。
+## その他の補足
 
-1. リポジトリを作成する
+### commitを取り消す方法
 
-    ```bash
-    $ cd
-    # リポジトリ用ディレクトリ作成
-    $ mkdir ff_noff_test
-    $ cd ff_noff_test
-    $ touch test.txt
-    # リポジトリの初期化とコミット
-    $ git init
-    $ git add .
-    $ git commit -m "1st commit on master"
-    ```
+※以下の方法がすべてではりません
 
-1. ブランチで変更を加え、それぞれのオプションでマージを実行する
-
-    **fast-forward の場合**
-
-    ```bash
-    # ブランチを作成
-    $ git checkout -b topic
-    # ファイルに変更を加えてコミットする
-    $ echo "aiueo" >> test.txt
-    $ git commit -m "topic commit"
-    # masterブランチに切り替える
-    $ git checkout master
-    # topicブランチの変更をmasterブランチに統合(fast-forward)
-    $ git merge --ff topic
-    # コミットログにマージコミットが含まれていないことを確認する
-    $ git log
-    ```
-
-    **non-fast-forward の場合**
-
-    ```bash
-    # 再度topicブランチで変更を加える
-    $ git checkout topic
-    $ echo "kakikukeko" >> test.txt
-    $ git commit -m "topic commit2"
-    $ git checkout master
-    # topicブランチの変更をmasterブランチに統合(non-fast-forward)
-    $ git merge --no-ff topic
-    # コミットログにマージコミットが含まれていることを確認する
-    $ git log
-    ```
-
-### merge と rebase
-Gitでブランチ間の変更を統合する方法はmergeの他にrebaseという方法があります。
-
-|コマンド|振る舞い|
-|:-----------|:------------|
-| merge | 統合先(master)に、統合元(topic)の変更を、時系列順に合流させる |
-| rebase | 統合元(topic)の変更を、統合先(master)の変更の<strong>後に</strong>、<strong>別のコミットとして</strong> 再登録する |
-
-* mergeとrebaseの違い
-![mergeとrebaseの違い](../asset/img/merge_vs_rebase.png)
-
-それでは、実際に２つのブランチの統合をmerge/rebaseそれぞれで行い、コミットログの差異を確認しましょう。
-
-1. リポジトリを作成する
-
-    ```bash
-    $ cd
-    # リポジトリ用ディレクトリ作成
-    $ mkdir merging_test
-    $ cd merging_test
-    $ echo "1234" >> test.txt
-    # リポジトリの初期化とコミット
-    $ git init
-    $ git add .
-    $ git commit -m "1st commit on master"
-    ```
-
-1. 2つのブランチでそれぞれ変更を加える
-
-    ```bash
-    # 現時点のmasterを元にtopicブランチを作成
-    $ git checkout -b topic
-    # masterブランチに戻って変更を加える
-    $ git checkout master
-    $ echo "5678" >> test.txt
-    $ git add .
-    $ git commit -m "2nd commit on master"
-    # topicブランチに移動して変更を加える
-    $ git checkout topic
-    $ echo "aiueo" >> test2.txt
-    $ git add .
-    $ git commit -m "commit on topic"
-    # masterブランチに戻る
-    $ git checkout master
-    ```
-
-3. リポジトリを２つcloneして、mergeとrebaseの違いを確認する
-
-    ```bash
-    $ cd
-    # リポジトリをcloneする
-    $ git clone merging_test for_merge
-    $ git clone merging_test for_rebase
-    ```
-
-    まずはmergeの確認
-
-    ```bash
-    $ cd ~/for_merge
-    $ git merge origin/topic
-    # merge後のコミットログを確認
-    $ git log --graph --oneline --decorate
-    ```
-
-    次にrebaseの確認
-
-    ```bash
-    $ cd ~/for_rebase
-    $ git rebase origin/topic
-    # rebase後のコミットログを確認
-    $ git log --graph --oneline --decorate
-    ```
-
-上記で、以下の違いが確認できるかと思います。
-
-* merge
-    * マージコミットが作成されていること
-    * 各コミットのハッシュ値が変化していないこと
-* rebase
-    * マージコミットが作成されていないこと
-    * 各コミットの時系列順やハッシュ値が変化していること
-
-rebaseについては、実行前と実行後で既にコミットされた変更が、別のコミットとして登録されてしまうので、既にリモートリポジトリにpush済みの場合などは注意が必要です。（他の人が取り込んでいると、rebase後取り込みに失敗したり、pushに失敗したりする）
-
-したがって、運用に慣れない間は、特に必要が無い場合、次の用途を除いてrebaseの使用を避ける方が良いとされています。
-
-### rebaseを安心して使えるケース
-
-ローカルでは変更が発生せず、リモート側の変更を取り込むだけのブランチ統合の場合、rebaseを使用しても問題が発生する事はありません。
-また、rebaseのマージコミットが残らないという特性を活かし、以下のような運用をすることが一般的です。
-
-1. merge時のオプションは必ず`--no-ff`を使用するよう`~/.gitconfig`に設定する
-2. master等の統合ブランチの最新化は `fetch` + `rebase` で行う
+#### pushする前
+コミットログの修正などは、コミットを再実行する`--amend`オプションを使用します。
 
 ```bash
-$ git fetch origin
-$ git rebase origin/master master
+git commit --amend
 ```
 
-また、同じことを`git pull`に`--rebase`オプションを付けることでも実現できます。
+コミット対象のadd漏れや、修正漏れがあった場合などは、コミットを取り消す`reset --soft`を使用します。
 
 ```bash
-$ git pull --rebase origin
+# <commit>で指定する位置までローカルの変更を戻す
+git reset --soft <commit>
 ```
+* `<commit>`は、SVNのリビジョン番号に相当するもので、コミットログに表示される`コミットのハッシュ値`や、最新のコミットを示す`HEAD`や、最新のひとつ前を示す`HEAD^`などを指定します。
 
-`git pull`が fetch + merge を一度に行ってくれるのに対し、`git pull --rebase`は fetch + rebase を一度に行ってくれる事を意味します。
-
-
-## (補足) fetch + mergeの意味を詳しく知りたい人向け資料
-
-fetchとmergeを理解するには、まずGitのブランチの種類を知る必要があります。
-Gitのブランチは大きく以下の３つのブランチに分類されます。
-
-|種類|説明|場所|
-|:-----------|:------------|:-----------:|
-| リモートブランチ | リモートリポジトリ上のブランチ | リモート |
-| リモート追跡ブランチ | リモートブランチと関連付けられたローカル上のブランチ| ローカル |
-| ローカルブランチ | ローカル上の作業ブランチ | ローカル |
-
-
-リモート追跡ブランチはcloneやfetchを実行した際に、自動でローカル上に作成されます。
-ローカル上に存在するブランチは、`git branch -a`で確認する事ができ、それぞれ以下のブランチを示しています。
+*実行例*
 
 ```bash
-$ git branch -a
-* master # ローカルブランチ
-remotes/origin/HEAD -> origin/master
-remotes/origin/master　# origin上のmasterブランチのリモート追跡ブランチ
+# 直前のコミットまで戻す
+git reset --soft HEAD^
 ```
 
-* ブランチのイメージ図
-![ブランチのイメージ図](../asset/img/remote-branches.png)
+#### pushした後
+あるコミットで行われた変更を打ち消す差分をコミットする`revert`を使用します。
 
-上記を踏まえて、fetchとmergeがそれぞれ何をやっているかを解説します。
+```bash
+# <commit>で指定する変更と「逆の」変更を行う
+git revert <commit>
+# 打ち消し変更コミットをリモートにpushする
+git push origin <ブランチ名>
+```
 
-* `git fetch` →　リモートブランチの変更をリモート追跡ブランチに取り込む
-* `git merge <リモート追跡ブランチ> <ローカルブランチ>` →　ローカルブランチにリモート追跡ブランチの内容をマージする
-
-リモートの変更をローカルに取り込もうとする際、思いがけずコンフリクトが発生してしまうことがあります。そんな時は上記を思い出して下さい。
+リモート上からコミット履歴を削除する方法もありますが、原則的に一度pushした変更は他の開発者が取り込んでいる可能性があるため、推奨されません。
+例外的に、確実に自分しか変更を加えていないブランチなどについては許容されますが、安易に使うべきではないという意味も込めて、ここでは紹介を省きます。
+SVNに比べて、段階的に変更をリモートに反映できるので、都度セルフチェックを行うようにしましょう。

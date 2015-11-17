@@ -12,7 +12,7 @@
 
 **補足資料**
 
-* [様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)
+* [様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd.various-merge.md)
     * fast-forward と non-fast-forward
     * merge と rebase
     * rebaseを安心して使えるケース
@@ -93,7 +93,7 @@ git merge origin/master
 **(補足) マージコミット**
 
 topicブランチからmaster等の **統合ブランチへのmerge** を行う場合、「マージした」という履歴を残すため、マージコミットを残す事が一般的です。
-しかし、今回のようにリモートの変更をローカルに反映するmergeではマージコミットを残したくありません。その場合、`git merge`の代わりに`git rebase`を行います。詳細は、[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)を参照してください。
+しかし、今回のようにリモートの変更をローカルに反映するmergeではマージコミットを残したくありません。その場合、`git merge`の代わりに`git rebase`を行います。詳細は、[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd.various-merge.md)を参照してください。
 
 **(補足) git pull**
 
@@ -301,7 +301,7 @@ git log --graph --oneline
 >ここで、ブランチの統合にmergeではなく、rebaseというコマンドを使用しています。
 >リモートの変更を取り込む際にマージコミットを残さない方法がこちらです。
 >rebaseも、mergeと同様にブランチの統合を行うコマンドですが、コミットを残さないという特徴があります。
->両者の使い分けはきちんとした根拠があるのですが、それについては[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd_follow.md)を参照してください。
+>両者の使い分けはきちんとした根拠があるのですが、それについては[様々なブランチ統合 (fast-forward, non-fast-forward, rebase)](./2nd.various-merge.md)を参照してください。
 
 ### 3. コンフリクトの解消
 

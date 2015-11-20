@@ -186,6 +186,8 @@ git checkout v1.0.0
 
 ## 実践的なブランチ戦略と開発フロー
 
+> ここで紹介するブランチモデルや開発フローは、あくまでモデルケースであり、強制されるものではありません。これらを参考に、開発チーム毎に適した形にアレンジしていくのが良いでしょう。
+
 ### Git Flow
 
 * [A successful Git branching model](http://nvie.com/posts/a-successful-git-branching-model/) ([和訳](http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html))
@@ -196,7 +198,7 @@ git checkout v1.0.0
 * フローに則って開発を行うことで統制を取りやすく、大規模な開発に向いている
 * ブランチの運用（分岐・統合のタイミング、分岐元・統合先のブランチ）に慣れるまではややこしく感じる
 
-#### ブランチツリー
+#### ブランチモデル
 
 ![Git Flow](../asset/img/git-flow.png)
 
@@ -278,7 +280,7 @@ feature, release, hotfix ブランチの命名に特に決まりはありませ�
 * Githubの使用を前提に、Pull Requestによるコードレビュー
 * Githubを中心に据え、自動テスト・自動デプロイを駆使し、短い開発スパンで成果物をリリースする、スピード感のある開発スタイル
 
-#### ブランチツリー
+#### ブランチモデル
 
 ![Github Flow](../asset/img/github-flow.png)
 
@@ -319,7 +321,7 @@ feature ブランチの命名に特に決まりはありません。
 * プロジェクト開始当初はスピード感の出やすい **Github Flow** を採用していた
 * アプリのファーストリリースに際し、リリース作業のためのブランチ`release`を用意し、リリース準備中も`master`で次期開発を行えるようにフローを変更した
 
-#### ブランチツリー
+#### ブランチモデル
 
 ![KC2 Flow](../asset/img/kc2-flow.png)
 
@@ -373,3 +375,5 @@ feature, hotfix ブランチの命名に特に決まりはありません。
 ## まとめ
 
 ### なぜGitか？Git導入のメリットとは？
+
+(ディスカッション)

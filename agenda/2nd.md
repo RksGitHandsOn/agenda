@@ -39,7 +39,7 @@ git push <リポジトリ名> <ブランチ名>
 ## はじめに
 
 今回は、GithubのOrganization機能でリポジトリを共有しながら進めます。
-Githunのダッシュボードを個人用からOrganization用に切り替えるには、以下のようにOrganization名を選択してください。
+Githubのダッシュボードを個人用からOrganization用に切り替えるには、以下のようにOrganization名を選択してください。
 
 ![ダッシュボードの切り替え](../asset/img/1_selectorg.PNG)
 
@@ -50,7 +50,7 @@ Githunのダッシュボードを個人用からOrganization用に切り替え�
 ### 事前準備
 * 以下のリポジトリをローカルにcloneする
 
-    https://github.com/RksOsakaGitHandsOn/2ndclass_step1.git
+    https://github.com/RksGitHandsOn/2ndclass-study-merge.git
 
 #### 1. リモートリポジトリに変更を加える
 
@@ -373,8 +373,8 @@ git rebase origin/master
 masterのマージを試みると、コンフリクトが発生します。
 
 ```bash
-$ git checkout conflict_test
-$ git merge master
+git checkout conflict_test
+git merge master
 Auto-merging number.txt
 CONFLICT (add/add): Merge conflict in number.txt
 Auto-merging alphabet.txt
@@ -387,7 +387,7 @@ Automatic merge failed; fix conflicts and then commit the result.
 ここからコンフリクトの解消に移ります。
 
 ```bash
-$ git status
+git status
 On branch conflict_test
 You have unmerged paths.
   (fix conflicts and run "git commit")
@@ -457,7 +457,7 @@ commitを取り消す方法については、後述の補足をご覧くださ�
 
 ### commitを取り消す方法
 
-※以下の方法がすべてではりません
+※以下の方法がすべてではありません
 
 #### pushする前
 コミットログの修正などは、コミットを再実行する`--amend`オプションを使用します。
